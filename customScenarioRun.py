@@ -15,7 +15,7 @@ from torchrl.envs.utils import check_env_specs
 
 from torchrl.modules import MultiAgentMLP, ProbabilisticActor, TanhNormal
 from torchrl.objectives import ClipPPOLoss, ValueEstimators
-torch.manual_seed(1)
+torch.manual_seed(0)
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 

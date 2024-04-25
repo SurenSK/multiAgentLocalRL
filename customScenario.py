@@ -218,7 +218,12 @@ class Scenario(BaseScenario):
                         a.local_info[c]=(b.state.pos[c]+b.state.vel[c])*0.1
                         b.local_info[c]=(a.state.pos[c]+a.state.vel[c])*0.1
                         buffer = torch.logical_or(buffer,c)
-                # a.state.vel[not buffer]=a.state.vel[buffer]*0.9
+                vec_to_goal = a.goal.state.pos - a.state.pos
+                # normalize vec_to_goal
+                vec_to_goal = vec_to_goal / torch.linalg.norm(vec_to_goal,dim=-1).unsqueeze(-1)
+                # set vec_to_goal magnitude to agent's max speed
+                vec_to_goal = vec_to_goal * a.f_range
+                a.state.vel[torch.logical_not(buffer)]+=(vec_to_goal[torch.logical_not(buffer)]*0.1)
         # Check if no other agents are in sight
         # no_agents_in_sight = True
         # for other_agent in self.world.agents:
