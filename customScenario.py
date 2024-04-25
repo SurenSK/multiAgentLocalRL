@@ -106,6 +106,7 @@ class Scenario(BaseScenario):
                 linear_friction=0.05,
                 angular_friction=0.05,
             )
+            agent.local_info = torch.zeros((batch_dim,2), device=device)
             agent.pos_rew = torch.zeros(batch_dim, device=device)
             agent.agent_collision_rew = agent.pos_rew.clone()
             world.add_agent(agent)
@@ -210,12 +211,14 @@ class Scenario(BaseScenario):
         
             # print("test")
             for a in self.world.agents:
-                buffer=torch.ones(60, dtype=torch.bool, device="cuda")
+                buffer=torch.zeros(60, dtype=torch.bool, device="cuda")
                 for b in self.world.agents:
                     if a!=b:
                         c=self.world.get_distance(a,b)>=self.lidar_range
-                        buffer = torch.logical_and(buffer,c)
-                a.agent_collision_rew[buffer]+=0.01
+                        a.local_info[c]=(b.state.pos[c]+b.state.vel[c])*0.1
+                        b.local_info[c]=(a.state.pos[c]+a.state.vel[c])*0.1
+                        buffer = torch.logical_or(buffer,c)
+                # a.state.vel[not buffer]=a.state.vel[buffer]*0.9
         # Check if no other agents are in sight
         # no_agents_in_sight = True
         # for other_agent in self.world.agents:
