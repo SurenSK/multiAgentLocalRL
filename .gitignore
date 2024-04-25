@@ -1,2 +1,4 @@
 test.py
+scratch.py
+*.gif
 __pycache__/
