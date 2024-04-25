@@ -100,6 +100,11 @@ class Scenario(BaseScenario):
                     if self.collisions
                     else None
                 ),
+                f_range=5,
+                t_range=5,
+                v_range=5,
+                linear_friction=0.05,
+                angular_friction=0.05,
             )
             agent.pos_rew = torch.zeros(batch_dim, device=device)
             agent.agent_collision_rew = agent.pos_rew.clone()
